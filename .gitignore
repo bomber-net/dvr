@@ -1,0 +1,7 @@
+/.docker
+/.idea
+/app/Console/Commands/Sandbox
+/vendor
+/.env*
+/docker-compose.yml
+/composer.lock
