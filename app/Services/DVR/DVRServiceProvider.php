@@ -10,8 +10,7 @@ class DVRServiceProvider extends ServiceProvider
 			{
 				$this->app->singleton (DVRService::class,function ()
 					{
-						['tmpDir'=>$tmpDir,'outDir'=>$outDir]=config ('dvr');
-						return new DVRService($tmpDir,$outDir);
+						return new DVRService('/tmp',config ('filesystems.disks.dvr.root'));
 					});
 			}
 		
