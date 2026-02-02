@@ -8,10 +8,8 @@ class DVRServiceProvider extends ServiceProvider
 	{
 		public function register ():void
 			{
-				$this->app->singleton (DVRService::class,function ()
-					{
-						return new DVRService('/tmp',config ('filesystems.disks.dvr.root'));
-					});
+				$config=config ('dvr');
+				$this->app->singleton (DVRService::class,fn () => new DVRService($config));
 			}
 		
 		public function boot ():void

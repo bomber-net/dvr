@@ -3,24 +3,30 @@
 namespace App\Services\DVR;
 
 use App\Models\Camera;
+use Illuminate\Filesystem\LocalFilesystemAdapter;
 use Illuminate\Support\Facades\Concurrency;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Process;
+use Illuminate\Support\Facades\Storage;
 
 final class DVRService
 	{
 		private const string SIGNATURE="\x00\x00\x00\x01\x40\x01";
 		private const int OFFSET=6;
+		private LocalFilesystemAdapter $disk;
 		
-		public function __construct (private readonly string $tmpDir,private readonly string $baseDir)
+		public function __construct (array $config)
 			{
+				/** @var LocalFilesystemAdapter $disk */
+				$disk=Storage::disk ($config['diskname']);
+				$this->disk=$disk;
 			}
 		
 		public function run (Camera $cam):void
 			{
 				$name=$cam->name;
-				$socketFile="$this->tmpDir/$name.sock";
-				$outDir="$this->baseDir/$name";
+				$socketFile="/tmp/$name.sock";
+				$outDir=$this->disk->path ($name);
 				Concurrency::run ([
 					fn () => $this->writer ($cam,$socketFile,$outDir),
 					fn () => $this->receiver ($cam,$socketFile),
