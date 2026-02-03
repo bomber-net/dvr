@@ -34,6 +34,7 @@ readonly class DVRGC
 						if ($trimSize<0) return false;
 						$disk->delete ($info[0]);
 						$trimSize-=$info[1];
+						return true;
 					});
 			}
 	}
