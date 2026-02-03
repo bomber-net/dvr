@@ -29,10 +29,11 @@ readonly class DVRGC
 						[$filenameB,$sizeB]=$infoB;
 						if ($byDate=strcmp (substr ($filenameA,10,-5),substr ($filenameB,10,-5))) return $byDate;
 						return $sizeB-$sizeA;
-					})->values ()->takeWhile (function (array $info) use (&$trimSize)
+					})->each (function (array $info) use ($disk,&$trimSize)
 					{
+						if ($trimSize<0) return false;
+						$disk->delete ($info[0]);
 						$trimSize-=$info[1];
-						return $trimSize>0;
-					})->each (fn (array $info) => $disk->delete ($info[0]));
+					});
 			}
 	}
